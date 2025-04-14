@@ -1,4 +1,4 @@
-from app import db
+from ..database import db
 
 collector_region = db.Table('collector_region',
     db.Column('collector_id', db.Integer, db.ForeignKey('collectors.id')),

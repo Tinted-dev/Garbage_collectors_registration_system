@@ -1,5 +1,8 @@
+# app/__init__.py
+from flask import Flask
 from flask_migrate import Migrate
-from app import db
+from flask_cors import CORS
+from .database import db  # 👈 Import db from database.py
 
 def create_app():
     app = Flask(__name__)
@@ -8,7 +11,7 @@ def create_app():
     CORS(app)
     db.init_app(app)
 
-    from app.models import user, collector, region, verification  # 👈 Make sure models are imported
+    from app.models import user, collector, region, verification  # Models imported after db.init_app
     Migrate(app, db)
 
     from app.routes import collector_routes, user_routes, region_routes, verification_routes

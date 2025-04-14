@@ -1,4 +1,4 @@
-from app import db
+from ..database import db
 from .region import collector_region
 
 class GarbageCollector(db.Model):

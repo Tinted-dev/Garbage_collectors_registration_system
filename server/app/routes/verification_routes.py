@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app import db
+from ..database import db
 from app.models.verification import Verification
 from app.models.collector import GarbageCollector
 
