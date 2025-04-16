@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -16,51 +17,71 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
     axios.post("http://localhost:5000/users/login", formData)
       .then(res => {
-        login(res.data); // save in context
+        login(res.data);
         const role = res.data.role;
-        if (role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/"); // later we can route collectors elsewhere
-        }
+        navigate(role === "admin" ? "/admin" : "/");
       })
       .catch(() => {
         setError("Invalid credentials");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 bg-white p-6 rounded-xl shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">Login</h2>
-      {error && <div className="mb-3 text-red-600">{error}</div>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          required
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          required
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-        <button
-          type="submit"
-          className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-700"
-        >
-          Login
-        </button>
-      </form>
+    <div className="container mt-5">
+      <div className="card shadow p-4" style={{ backgroundColor: "#ffffff", color: "#212529" }}>
+        <h2 className="text-center text-success fw-bold mb-4">Login</h2>
+
+        {error && (
+          <div className="alert alert-danger text-center" role="alert">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Email</label>
+            <input
+              type="email"
+              name="email"
+              className="form-control"
+              placeholder="Enter your email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Password</label>
+            <input
+              type="password"
+              name="password"
+              className="form-control"
+              placeholder="Enter your password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+            />
+          </div>
+
+          <button type="submit" className="btn btn-success w-100" disabled={loading}>
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Logging in...
+              </>
+            ) : (
+              "Login"
+            )}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

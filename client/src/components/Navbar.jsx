@@ -10,47 +10,54 @@ const Navbar = () => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-    <nav className="bg-green-600 text-white px-6 py-3 shadow-md">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-extrabold tracking-wide">
-          <Link to="/">WasteWatch</Link>
-        </h1>
-        {/* Menu icon - now always visible */}
-        <button
-          className="text-white focus:outline-none"
-          onClick={toggleMenu}
-        >
-          {menuOpen ? <X size={32} /> : <Menu size={28} />}
+    <nav className="navbar navbar-expand-lg" style={{ background: "linear-gradient(to right, #7ed957, #50c878)" }}>
+      <div className="container-fluid">
+        <Link to="/" className="navbar-brand fw-bold text-white fs-4">
+          WasteWatch
+        </Link>
+        <button className="navbar-toggler border-0" type="button" onClick={toggleMenu}>
+          {menuOpen ? <X size={28} color="white" /> : <Menu size={24} color="white" />}
         </button>
-      </div>
 
-      {/* Menu links - toggle visibility */}
-      {menuOpen && (
-        <div className="mt-4 flex flex-col space-y-2 text-lg">
-          <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link to="/verify-collector" onClick={() => setMenuOpen(false)}>Verify</Link>
-          <Link to="/register-collector" onClick={() => setMenuOpen(false)}>Register</Link>
+        <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+            <li className="nav-item">
+              <Link to="/" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/verify-collector" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Verify</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/register-collector" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Register</Link>
+            </li>
 
-          {user ? (
-            <>
-              {user.role === "admin" && (
-                <Link to="/admin" onClick={() => setMenuOpen(false)}>Admin</Link>
-              )}
-              <button
-                onClick={() => {
-                  logout();
-                  setMenuOpen(false);
-                }}
-                className="bg-white text-green-600 px-3 py-1 rounded hover:bg-gray-100 w-fit"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>
-          )}
+            {user ? (
+              <>
+                {user.role === "admin" && (
+                  <li className="nav-item">
+                    <Link to="/admin" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Admin</Link>
+                  </li>
+                )}
+                <li className="nav-item">
+                  <button
+                    className="btn btn-light btn-sm ms-lg-2"
+                    onClick={() => {
+                      logout();
+                      setMenuOpen(false);
+                    }}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li className="nav-item">
+                <Link to="/login" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Login</Link>
+              </li>
+            )}
+          </ul>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

@@ -39,8 +39,29 @@ with app.app_context():
         national_id="87654321",
         regions=[region3]
     )
+    collector3 = GarbageCollector(
+        full_name="Wahome Maina",
+        email="wahome@gcollectors.com",
+        phone="0751123456",
+        national_id="57654321",
+        regions=[region1]
+    )
+    collector4 = GarbageCollector(
+        full_name="Leah Njoki",
+        email="Leah@gcollectors.com",
+        phone="0741123456",
+        national_id="67654321",
+        regions=[region2]
+    )
+    collector5 = GarbageCollector(
+        full_name="Sam Njoroge",
+        email="sa@gcollectors.com",
+        phone="0731123456",
+        national_id="77654321",
+        regions=[region3]
+    )
 
-    db.session.add_all([collector1, collector2])
+    db.session.add_all([collector1, collector2,collector3, collector4, collector5 ])
     db.session.commit()
 
     # Verifications

@@ -33,42 +33,54 @@ const VerifyCollector = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-xl">
-      <h2 className="text-2xl font-semibold mb-4">Verify a Garbage Collector</h2>
+    <div className="container mt-5">
+      <div className="card p-4 shadow" style={{ backgroundColor: "#ffffff", color: "#212529" }}>
+        <h2 className="card-title mb-4 text-center fw-bold text-success">Verify a Garbage Collector</h2>
 
-      {status && <p className="mb-4 text-blue-600">{status}</p>}
+        {status && (
+          <div className="alert alert-info text-center" role="alert">
+            {status}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <label className="block font-medium">Select Collector</label>
-        <select
-          className="w-full p-2 border rounded"
-          value={selectedId || ""}
-          onChange={(e) => setSelectedId(Number(e.target.value))}
-        >
-          <option value="" disabled>Select one...</option>
-          {collectors.map(c => (
-            <option key={c.id} value={c.id}>
-              {c.full_name} — {c.email}
-            </option>
-          ))}
-        </select>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Select Collector</label>
+            <select
+              className="form-select"
+              value={selectedId || ""}
+              onChange={(e) => setSelectedId(Number(e.target.value))}
+              required
+            >
+              <option value="" disabled>Select one...</option>
+              {collectors.map(c => (
+                <option key={c.id} value={c.id}>
+                  {c.full_name} — {c.email}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <input
-          type="text"
-          placeholder="Your Name"
-          className="w-full p-2 border rounded"
-          value={verifierName}
-          onChange={(e) => setVerifierName(e.target.value)}
-          required
-        />
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Your Name</label>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              className="form-control"
+              value={verifierName}
+              onChange={(e) => setVerifierName(e.target.value)}
+              required
+            />
+          </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Submit Verification
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="btn btn-success w-100"
+          >
+            Submit Verification
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

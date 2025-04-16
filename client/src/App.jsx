@@ -11,7 +11,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-gradient-to-br from-earth via-limegreen to-forest text-gray-800 font-eco">
+     <div className="min-h-screen bg-green-500 text-white text-center text-4xl p-10">
         <Router>
           <Navbar />
           <main className="max-w-6xl mx-auto px-4 py-8">

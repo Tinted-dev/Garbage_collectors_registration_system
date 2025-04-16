@@ -12,7 +12,6 @@ const RegisterCollector = () => {
   });
   const [status, setStatus] = useState("");
 
-  // Fetch regions from backend
   useEffect(() => {
     axios.get("http://localhost:5000/regions/")
       .then((res) => setRegions(res.data))
@@ -41,68 +40,96 @@ const RegisterCollector = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow-xl rounded-2xl mt-10">
-      <h2 className="text-2xl font-semibold mb-4">Register as a Garbage Collector</h2>
-      {status && <div className="mb-4 text-blue-600">{status}</div>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="full_name"
-          placeholder="Full Name"
-          value={formData.full_name}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          name="national_id"
-          placeholder="National ID"
-          value={formData.national_id}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <div>
-          <label className="block font-medium mb-1">Select Regions</label>
-          <div className="grid grid-cols-2 gap-2">
-            {regions.map(region => (
-              <label key={region.id} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={formData.region_ids.includes(region.id)}
-                  onChange={() => handleRegionChange(region.id)}
-                />
-                <span>{region.name}</span>
-              </label>
-            ))}
+    <div className="container mt-5">
+      <div className="card p-4 shadow" style={{ backgroundColor: "#ffffff", color: "#212529" }}>
+        <h2 className="card-title mb-4 text-center fw-bold">Register as a Garbage Collector</h2>
+
+        {status && (
+          <div className="alert alert-info text-center" role="alert">
+            {status}
           </div>
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-        >
-          Register
-        </button>
-      </form>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Full Name</label>
+            <input
+              type="text"
+              name="full_name"
+              value={formData.full_name}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Enter full name"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Enter email"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Phone</label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Enter phone number"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-semibold">National ID</label>
+            <input
+              type="text"
+              name="national_id"
+              value={formData.national_id}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Enter national ID"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Select Regions</label>
+            <div className="row">
+              {regions.map(region => (
+                <div key={region.id} className="col-6 mb-2">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={formData.region_ids.includes(region.id)}
+                      onChange={() => handleRegionChange(region.id)}
+                      id={`region-${region.id}`}
+                    />
+                    <label className="form-check-label" htmlFor={`region-${region.id}`}>
+                      {region.name}
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button type="submit" className="btn btn-success w-100">
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

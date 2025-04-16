@@ -1,6 +1,205 @@
+.navbar-custom {
+    background-color: #2e7d32; /* rich green */
+    color: white;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .navbar-custom .nav-link,
+  .navbar-custom .navbar-brand {
+    color: white !important;
+    font-weight: 500;
+  }
+  
+  .navbar-custom .nav-link:hover {
+    color: #c8e6c9 !important; /* soft green */
+  }
+  
+  .btn-logout {
+    background-color: white;
+    color: #2e7d32;
+    border-radius: 8px;
+    padding: 6px 12px;
+  }
+  
+  .btn-logout:hover {
+    background-color: #f1f1f1;
+  }
+  body {
+    background-color: #f1f1f1;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .carousel img {
+    max-height: 450px;
+    object-fit: cover;
+    border: 4px solid white;
+  }
+  
+  .card {
+    transition: transform 0.2s ease-in-out;
+    border-radius: 12px;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  /* src/index.css */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Optional: custom styles */
+body {
+    background-color: #f4fff4; /* subtle greenish-white */
+    color: #1b4332; /* dark green text */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  a {
+    color: #2d6a4f;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: #40916c;
+    text-decoration: underline;
+  }
+  
+  .btn-green {
+    background-color: #2d6a4f;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-green:hover {
+    background-color: #40916c;
+  }
+  
+  .card-green {
+    border: 1px solid #95d5b2;
+    background-color: #e9f5ee;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(34, 139, 34, 0.1);
+  }
+  body {
+    background-color: #f0fdf4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1b4332;
+  }
+  
+  a {
+    color: #2d6a4f;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  .card-green {
+    background-color: #ffffff;
+    border-left: 6px solid #2d6a4f;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  .btn-green {
+    background-color: #2d6a4f;
+    color: white;
+    border: none;
+  }
+  .btn-green:hover {
+    background-color: #40916c;
+  }
+  body {
+    background-color: #e9fbe5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1b4332;
+  }
+  
+  a {
+    color: #2d6a4f;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  .card-green {
+    background-color: #ffffff;
+    border-left: 6px solid #2d6a4f;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  .btn-green {
+    background-color: #2d6a4f;
+    color: white;
+  }
+  .btn-green:hover {
+    background-color: #40916c;
+  }
+  body {
+    background-color: #e9fbe5; /* Soft light green background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .card-green {
+    background-color: #ffffff;
+    border-left: 6px solid #2d6a4f;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  .btn-green {
+    background-color: #2d6a4f;
+    color: white;
+  }
+  .btn-green:hover {
+    background-color: #40916c;
+  }
+  
+  input, button {
+    font-size: 1rem;
+  }
+  .card-green {
+    background-color: #ffffff;
+    border-left: 6px solid #2d6a4f;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  body {
+    background-color: #e9fbe5; /* Soft light green background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  input, button {
+    font-size: 1rem;
+  }
+  
+  button:hover {
+    background-color: #40916c;
+  }
+  .card-green {
+    background-color: #ffffff;
+    border-left: 6px solid #2d6a4f;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  body {
+    background-color: #e9fbe5; /* Soft light green background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  input, button {
+    font-size: 1rem;
+  }
+  
+  button:hover {
+    background-color: #40916c;
+  }
+  
