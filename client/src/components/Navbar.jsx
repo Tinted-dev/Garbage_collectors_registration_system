@@ -16,7 +16,7 @@ const Navbar = () => {
           WasteWatch
         </Link>
         <button className="navbar-toggler border-0" type="button" onClick={toggleMenu}>
-          {menuOpen ? <X size={28} color="white" /> : <Menu size={24} color="white" />}
+          {menuOpen ? <X size={32} color="white" /> : <Menu size={24} color="white" />}
         </button>
 
         <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>

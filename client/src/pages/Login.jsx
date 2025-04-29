@@ -22,7 +22,11 @@ const Login = () => {
       .then(res => {
         login(res.data);
         const role = res.data.role;
-        navigate(role === "admin" ? "/admin" : "/");
+        if (role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/user-dashboard");
+        }
       })
       .catch(() => {
         setError("Invalid credentials");
@@ -31,6 +35,7 @@ const Login = () => {
         setLoading(false);
       });
   };
+  
 
   return (
     <div className="container mt-5">

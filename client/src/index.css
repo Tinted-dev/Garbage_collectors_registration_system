@@ -202,4 +202,17 @@ body {
   button:hover {
     background-color: #40916c;
   }
+  .home-wrapper {
+    background: url("src/images/slide.jpg") no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    position: relative;
+  }
+  
+  .home-overlay {
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    backdrop-filter: blur(4px); /* Blur background */
+    min-height: 100vh;
+    width: 100%;
+  }
   

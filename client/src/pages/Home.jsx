@@ -10,13 +10,25 @@ const Home = () => {
       <div id="homepageCarousel" className="carousel slide" data-bs-ride="carousel">
         <div className="carousel-inner">
           <div className="carousel-item active">
-            <img src="src/images/slide0.jpg" className="d-block w-100 rounded" alt="Clean Environment" />
+            <img src="src/images/slide.jpg" className="d-block w-100 rounded" alt="Clean Environment" />
           </div>
           <div className="carousel-item">
-            <img src="src/images/slide2.jpg" className="d-block w-100 rounded" alt="Waste Management" />
+            <img src="src/images/slide1.jpg" className="d-block w-100 rounded" alt="Waste Management" />
           </div>
           <div className="carousel-item">
-            <img src="src/images/slide3.jpg" className="d-block w-100 rounded" alt="Eco-Friendly City" />
+            <img src="src/images/slide4.jpg" className="d-block w-100 rounded" alt="Eco-Friendly City" />
+          </div>
+          <div className="carousel-item">
+            <img src="src/images/slide5.jpg" className="d-block w-100 rounded" alt="Eco-Friendly City" />
+          </div>
+          <div className="carousel-item">
+            <img src="src/images/slide6.jpg" className="d-block w-100 rounded" alt="Eco-Friendly City" />
+          </div>
+          <div className="carousel-item">
+            <img src="src/images/slide7.jpg" className="d-block w-100 rounded" alt="Eco-Friendly City" />
+          </div>
+          <div className="carousel-item">
+            <img src="src/images/slide8.jpg" className="d-block w-100 rounded" alt="Eco-Friendly City" />
           </div>
         </div>
         <button className="carousel-control-prev" type="button" data-bs-target="#homepageCarousel" data-bs-slide="prev">
@@ -42,7 +54,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-
           <div className="col-md-4">
             <div className="card border-success shadow-sm h-100">
               <div className="card-body">
@@ -52,7 +63,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-
           <div className="col-md-4">
             <div className="card border-success shadow-sm h-100">
               <div className="card-body">
@@ -65,9 +75,65 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Testimonials Section */}
+      <div className="container mt-5">
+        <h2 className="text-center text-success mb-4">What People Are Saying 💬</h2>
+        <div className="row g-4">
+          <div className="col-md-4">
+            <div className="card h-100 border-0 shadow">
+              <div className="card-body">
+                <p className="card-text">"WasteWatch made it easy to find trusted collectors in my neighborhood. The system is seamless and reliable!"</p>
+                <h6 className="text-success">— Jane M., Nairobi Resident</h6>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card h-100 border-0 shadow">
+              <div className="card-body">
+                <p className="card-text">"As a collector, joining the platform helped me reach more clients and build trust in my services."</p>
+                <h6 className="text-success">— Peter K., Registered Collector</h6>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card h-100 border-0 shadow">
+              <div className="card-body">
+                <p className="card-text">"WasteWatch is a brilliant initiative. The registration process was straightforward and professional."</p>
+                <h6 className="text-success">— Susan L., Environment Officer</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Footer */}
-      <footer className="text-center mt-5 py-3 bg-success text-white">
-        <p className="mb-0">&copy; {new Date().getFullYear()} WasteWatch - Keeping our environment clean 🌱</p>
+      <footer className="text-white bg-dark bg-opacity-75 mt-5 w-100 pt-5 pb-4">
+        <div className="container text-center text-md-start">
+          <div className="row text-center text-md-start">
+            <div className="col-md-4 col-lg-4 col-xl-4 mx-auto mt-3">
+              <h5 className="text-uppercase mb-4 font-weight-bold text-success">WasteWatch</h5>
+              <p>
+                Empowering communities through smart waste management. Join us in keeping the environment clean and green.
+              </p>
+            </div>
+            <div className="col-md-4 col-lg-4 col-xl-4 mx-auto mt-3">
+              <h5 className="text-uppercase mb-4 font-weight-bold text-success">Quick Links</h5>
+              <p><Link to="/verify-collector" className="text-white text-decoration-none">Verify Collectors</Link></p>
+              <p><Link to="/register-collector" className="text-white text-decoration-none">Register as Collector</Link></p>
+              <p><Link to="/login" className="text-white text-decoration-none">Admin Portal</Link></p>
+            </div>
+            <div className="col-md-4 col-lg-4 col-xl-4 mx-auto mt-3">
+              <h5 className="text-uppercase mb-4 font-weight-bold text-success">Contact</h5>
+              <p><i className="bi bi-envelope-fill me-2"></i> info@wastewatch.org</p>
+              <p><i className="bi bi-telephone-fill me-2"></i> +254 700 123 456</p>
+              <p><i className="bi bi-geo-alt-fill me-2"></i> Nairobi, Kenya</p>
+            </div>
+          </div>
+          <hr className="my-3 text-white" />
+          <div className="text-center">
+            &copy; {new Date().getFullYear()} WasteWatch | All rights reserved 🌱
+          </div>
+        </div>
       </footer>
     </div>
   );

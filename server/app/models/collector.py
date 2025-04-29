@@ -12,6 +12,7 @@ class GarbageCollector(db.Model):
 
     regions = db.relationship('Region', secondary=collector_region, back_populates='collectors')
     verifications = db.relationship('Verification', backref='collector', lazy=True)
+    history = db.relationship('CollectorHistory', backref='collector', lazy=True)
 
     def serialize(self):
         return {

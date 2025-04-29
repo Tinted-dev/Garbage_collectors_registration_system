@@ -11,6 +11,10 @@ class Region(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
 
+    def to_dict(self):
+        return {"id": self.id, "name": self.name}
+
+
     collectors = db.relationship('GarbageCollector', secondary=collector_region, back_populates='regions')
 
     def serialize(self):
@@ -18,3 +22,4 @@ class Region(db.Model):
             "id": self.id,
             "name": self.name
         }
+
