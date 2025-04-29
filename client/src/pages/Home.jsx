@@ -2,8 +2,28 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../index.css"; // Make sure your custom styles are in here
+import emailjs from '@emailjs/browser';
+import { useRef } from 'react';
+
 
 const Home = () => {
+  const form = useRef();
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs.sendForm(
+      'service_dvyk4em',       // EmailJS service ID
+      'template_3yo8e9o',      // EmailJS template ID
+      form.current,
+      'AUmYd-CL8BUBqmN8m'        // EmailJS public key
+    ).then((result) => {
+      alert("Message sent successfully!");
+      form.current.reset();
+    }, (error) => {
+      alert("Failed to send message. Please try again.");
+    });
+  };
   return (
     <div>
       {/* Carousel Section */}
@@ -105,6 +125,38 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+    
+{/* Contact Us Section */}
+<div className="container mt-5">
+        <h2 className="text-center text-success mb-4">Contact Us 📬</h2>
+        <div className="row justify-content-center">
+          <div className="col-md-8">
+            <form ref={form} onSubmit={sendEmail}>
+              <div className="mb-3">
+                <label htmlFor="name" className="form-label">Full Name</label>
+                <input type="text" name="user_name" className="form-control" id="name" placeholder="Enter your name" required />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">Email address</label>
+                <input type="email" name="user_email" className="form-control" id="email" placeholder="name@example.com" required />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="subject" className="form-label">Subject</label>
+                <input type="text" name="subject" className="form-control" id="subject" placeholder="Enter subject" required />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="message" className="form-label">Message</label>
+                <textarea name="message" className="form-control" id="message" rows="5" placeholder="Type your message here..." required></textarea>
+              </div>
+              <div className="text-center">
+                <button type="submit" className="btn btn-success px-5">Send Message</button>
+            </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
       {/* Footer */}
       <footer className="text-white bg-dark bg-opacity-75 mt-5 w-100 pt-5 pb-4">
