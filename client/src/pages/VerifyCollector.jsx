@@ -73,13 +73,39 @@ const VerifyCollector = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-success w-100"
-          >
+          <button type="submit" className="btn btn-success w-100">
             Submit Verification
           </button>
         </form>
+      </div>
+
+      {/* Display Table of Collectors */}
+      <div className="mt-5">
+        <h4 className="text-center text-success mb-3">Latest 10 Registered Collectors</h4>
+        <div className="table-responsive">
+          <table className="table table-bordered table-striped">
+            <thead className="table-success">
+              <tr>
+                <th>#</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              {collectors.slice(-10).map((collector, index) => (
+                <tr key={collector.id}>
+                  <td>{index + 1}</td>
+                  <td>{collector.full_name}</td>
+                  <td>{collector.email}</td>
+                  <td>{collector.phone}</td>
+                  <td>{collector.location}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

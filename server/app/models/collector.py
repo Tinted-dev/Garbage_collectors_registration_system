@@ -1,5 +1,7 @@
 from ..database import db
 from .region import collector_region
+from .collector_history import CollectorHistory
+
 
 class GarbageCollector(db.Model):
     __tablename__ = 'collectors'

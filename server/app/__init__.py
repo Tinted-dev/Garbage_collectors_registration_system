@@ -1,8 +1,7 @@
-# app/__init__.py
 from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
-from .database import db  # 👈 Import db from database.py
+from .database import db  # Import db from database.py
 
 def create_app():
     app = Flask(__name__)
@@ -11,9 +10,18 @@ def create_app():
     CORS(app)
     db.init_app(app)
 
-    from app.models import user, collector, region, verification  # Models imported after db.init_app
-    Migrate(app, db)
+    # Ensure all models are imported so SQLAlchemy registers them
+    with app.app_context():
+        from app.models.collector import GarbageCollector
+        from app.models.collector_history import CollectorHistory
+        from app.models.region import Region
+        from app.models.user import User
+        from app.models.verification import Verification
 
+        # Run migrations *after* all models are registered
+        Migrate(app, db)
+
+    # Import and register all routes after model setup
     from app.routes import collector_routes, user_routes, region_routes, verification_routes
     app.register_blueprint(collector_routes.bp)
     app.register_blueprint(user_routes.bp)
