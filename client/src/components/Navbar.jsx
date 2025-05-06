@@ -10,37 +10,37 @@ const Navbar = () => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-    <nav className="navbar navbar-expand-lg" style={{ background: "linear-gradient(to right, #7ed957, #50c878)" }}>
+    <nav className="navbar navbar-expand-lg minimalist-navbar">
       <div className="container-fluid">
         <Link to="/" className="navbar-brand fw-bold text-white fs-4">
           WasteWatch
         </Link>
-        <button className="navbar-toggler border-0" type="button" onClick={toggleMenu}>
+        <button className="navbar-toggler border-0" type="button" onClick={toggleMenu} aria-label="Toggle navigation">
           {menuOpen ? <X size={32} color="white" /> : <Menu size={24} color="white" />}
         </button>
 
         <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-3 gap-2">
             <li className="nav-item">
-              <Link to="/" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Home</Link>
+              <Link to="/" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Home</Link>
             </li>
             <li className="nav-item">
-              <Link to="/verify-collector" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Verify</Link>
+              <Link to="/verify-collector" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Verify</Link>
             </li>
             <li className="nav-item">
-              <Link to="/register-collector" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Register</Link>
+              <Link to="/register-collector" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Register</Link>
             </li>
 
             {user ? (
               <>
                 {user.role === "admin" && (
                   <li className="nav-item">
-                    <Link to="/admin" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Admin</Link>
+                    <Link to="/admin" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Admin</Link>
                   </li>
                 )}
                 <li className="nav-item">
                   <button
-                    className="btn btn-light btn-sm ms-lg-2"
+                    className="btn minimalist-logout-button btn-sm ms-lg-2"
                     onClick={() => {
                       logout();
                       setMenuOpen(false);
@@ -52,7 +52,7 @@ const Navbar = () => {
               </>
             ) : (
               <li className="nav-item">
-                <Link to="/login" className="nav-link text-white" onClick={() => setMenuOpen(false)}>Login</Link>
+                <Link to="/login" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Login</Link>
               </li>
             )}
           </ul>
