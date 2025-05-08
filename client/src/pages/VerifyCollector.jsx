@@ -6,9 +6,10 @@ const VerifyCollector = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [verifierName, setVerifierName] = useState("");
   const [status, setStatus] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Get the backend URL
 
   useEffect(() => {
-    axios.get("http://localhost:5000/collectors/")
+    axios.get(`${API_BASE_URL}/collectors/`) // Use the environment variable
       .then(res => setCollectors(res.data))
       .catch(() => setStatus("Failed to load collectors."));
   }, []);
@@ -20,7 +21,7 @@ const VerifyCollector = () => {
       return;
     }
 
-    axios.post("http://localhost:5000/verifications/", {
+    axios.post(`${API_BASE_URL}/verifications/`, { // Use the environment variable
       collector_id: selectedId,
       verifier_name: verifierName,
     })

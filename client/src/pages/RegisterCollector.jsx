@@ -11,12 +11,13 @@ const RegisterCollector = () => {
     region_ids: [],
   });
   const [status, setStatus] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Get the backend URL
 
   useEffect(() => {
-    axios.get("http://localhost:5000/regions/")
+    axios.get(`${API_BASE_URL}/regions/`) // Use the environment variable
       .then((res) => setRegions(res.data))
       .catch(() => setStatus("Failed to load regions"));
-  }, []);
+  }, [API_BASE_URL]); // Include API_BASE_URL in the dependency array
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,7 +35,7 @@ const RegisterCollector = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post("http://localhost:5000/collectors/", formData)
+    axios.post(`${API_BASE_URL}/collectors/`, formData) // Use the environment variable
       .then(() => setStatus("Registration successful!"))
       .catch(() => setStatus("Error during registration"));
   };

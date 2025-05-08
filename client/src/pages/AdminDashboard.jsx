@@ -13,6 +13,7 @@ const AdminDashboard = () => {
   const [error, setError] = useState("");
   const { user } = useAuth();
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Get the backend URL
 
   const [showModal, setShowModal] = useState(false);
   const [selectedCollector, setSelectedCollector] = useState(null);
@@ -31,7 +32,7 @@ const AdminDashboard = () => {
 
   const fetchCollectors = () => {
     axios
-      .get("http://localhost:5000/collectors/")
+      .get(`${API_BASE_URL}/collectors/`) // Use the environment variable
       .then((res) => {
         setCollectors(res.data);
         setLoading(false);
@@ -44,12 +45,12 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchCollectors();
-  }, []);
+  }, [API_BASE_URL]); // Include API_BASE_URL in the dependency array
 
   const handleDelete = (id) => {
     if (!window.confirm("Delete this collector?")) return;
     axios
-      .delete(`http://localhost:5000/collectors/${id}`)
+      .delete(`${API_BASE_URL}/collectors/${id}`) // Use the environment variable
       .then(() => fetchCollectors())
       .catch(() => alert("Error deleting collector"));
   };
@@ -72,7 +73,7 @@ const AdminDashboard = () => {
 
   const handleUpdate = () => {
     axios
-      .put(`http://localhost:5000/collectors/${selectedCollector.id}`, editData)
+      .put(`${API_BASE_URL}/collectors/${selectedCollector.id}`, editData) // Use the environment variable
       .then(() => {
         setShowModal(false);
         fetchCollectors();

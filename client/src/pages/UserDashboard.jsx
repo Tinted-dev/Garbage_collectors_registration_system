@@ -9,6 +9,7 @@ const UserDashboard = () => {
   const [regions, setRegions] = useState([]);
   const [history, setHistory] = useState([]);
   const [status, setStatus] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Get the backend URL
 
   // Load user data
   useEffect(() => {
@@ -16,14 +17,14 @@ const UserDashboard = () => {
       setFormData({ full_name: user.full_name || "", phone: user.phone || "" });
     }
 
-    axios.get("http://localhost:5000/regions/")
+    axios.get(`${API_BASE_URL}/regions/`) // Use the environment variable
       .then(res => setRegions(res.data))
       .catch(() => setStatus("Failed to load regions."));
 
-    axios.get(`http://localhost:5000/collectors/${user?.id}/verifications`)
+    axios.get(`${API_BASE_URL}/collectors/${user?.id}/verifications`) // Use the environment variable
       .then(res => setHistory(res.data))
       .catch(() => setStatus("Failed to load history."));
-  }, [user]);
+  }, [user, API_BASE_URL]); // Include API_BASE_URL in the dependency array
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +33,7 @@ const UserDashboard = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    axios.put(`http://localhost:5000/collectors/${user?.id}`, formData)
+    axios.put(`${API_BASE_URL}/collectors/${user?.id}`, formData) // Use the environment variable
       .then(() => setStatus("Details updated successfully!"))
       .catch(() => setStatus("Failed to update details."));
   };

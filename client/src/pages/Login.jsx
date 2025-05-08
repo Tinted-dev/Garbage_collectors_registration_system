@@ -9,6 +9,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Get the backend URL
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,7 +19,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    axios.post("http://localhost:5000/users/login", formData)
+    axios.post(`${API_BASE_URL}/users/login`, formData) // Use the environment variable
       .then(res => {
         login(res.data);
         const role = res.data.role;
@@ -35,7 +36,7 @@ const Login = () => {
         setLoading(false);
       });
   };
-  
+
 
   return (
     <div className="container mt-5">
