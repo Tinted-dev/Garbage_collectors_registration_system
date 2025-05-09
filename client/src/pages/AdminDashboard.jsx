@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form"; // Import Form component
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../index.css";
 
@@ -15,13 +16,14 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Get the backend URL
 
-  const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCollector, setSelectedCollector] = useState(null);
   const [editData, setEditData] = useState({
     full_name: "",
     email: "",
     phone: "",
     national_id: "",
+    is_approved: false, // Add is_approved to editData
   });
 
   useEffect(() => {
@@ -62,20 +64,24 @@ const AdminDashboard = () => {
       email: collector.email,
       phone: collector.phone,
       national_id: collector.national_id,
+      is_approved: collector.is_approved, // Populate is_approved in editData
     });
-    setShowModal(true);
+    setShowEditModal(true);
   };
 
   const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setEditData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleUpdate = () => {
     axios
       .put(`${API_BASE_URL}/collectors/${selectedCollector.id}`, editData) // Use the environment variable
       .then(() => {
-        setShowModal(false);
+        setShowEditModal(false);
         fetchCollectors();
       })
       .catch(() => alert("Failed to update collector"));
@@ -102,6 +108,7 @@ const AdminDashboard = () => {
                   <th>Phone</th>
                   <th>Regions</th>
                   <th>Verifications</th>
+                  <th>Approved</th> {/* New column for approval status */}
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -117,6 +124,7 @@ const AdminDashboard = () => {
                         : "N/A"}
                     </td>
                     <td>{collector.verifications?.length || 0}</td>
+                    <td>{collector.is_approved ? "Yes" : "No"}</td> {/* Display approval status */}
                     <td>
                       <button
                         className="btn btn-sm btn-primary me-2"
@@ -139,46 +147,65 @@ const AdminDashboard = () => {
         )}
 
         {/* Modal for editing */}
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
           <Modal.Header closeButton>
             <Modal.Title>Edit Collector</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <input
-              type="text"
-              name="full_name"
-              className="form-control mb-2"
-              value={editData.full_name}
-              onChange={handleEditChange}
-              placeholder="Full Name"
-            />
-            <input
-              type="email"
-              name="email"
-              className="form-control mb-2"
-              value={editData.email}
-              onChange={handleEditChange}
-              placeholder="Email"
-            />
-            <input
-              type="text"
-              name="phone"
-              className="form-control mb-2"
-              value={editData.phone}
-              onChange={handleEditChange}
-              placeholder="Phone"
-            />
-            <input
-              type="text"
-              name="national_id"
-              className="form-control mb-2"
-              value={editData.national_id}
-              onChange={handleEditChange}
-              placeholder="National ID"
-            />
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Full Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="full_name"
+                  value={editData.full_name}
+                  onChange={handleEditChange}
+                  placeholder="Full Name"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={editData.email}
+                  onChange={handleEditChange}
+                  placeholder="Email"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Phone</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="phone"
+                  value={editData.phone}
+                  onChange={handleEditChange}
+                  placeholder="Phone"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>National ID</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="national_id"
+                  value={editData.national_id}
+                  onChange={handleEditChange}
+                  placeholder="National ID"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  name="is_approved"
+                  label="Approve Collector"
+                  checked={editData.is_approved}
+                  onChange={handleEditChange}
+                />
+              </Form.Group>
+            </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
+            <Button variant="secondary" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
             <Button variant="success" onClick={handleUpdate}>

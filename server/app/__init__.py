@@ -2,6 +2,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
 from .database import db  # Import db from database.py
+from flask_mail import Mail  # Import Flask-Mail
 
 def create_app():
     app = Flask(__name__)
@@ -9,6 +10,10 @@ def create_app():
 
     CORS(app)
     db.init_app(app)
+
+    # Initialize Flask-Mail
+    mail = Mail(app)  # Initialize Flask-Mail here with the app instance
+    app.mail = mail #register the mail instance
 
     # Ensure all models are imported so SQLAlchemy registers them
     with app.app_context():

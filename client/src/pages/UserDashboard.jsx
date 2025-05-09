@@ -21,7 +21,7 @@ const UserDashboard = () => {
       .then(res => setRegions(res.data))
       .catch(() => setStatus("Failed to load regions."));
 
-    axios.get(`${API_BASE_URL}/collectors/${user?.id}/verifications`) // Use the environment variable
+      axios.get(`${API_BASE_URL}/collectors/${user?.id}/verifications`) // Use the environment variable
       .then(res => setHistory(res.data))
       .catch(() => setStatus("Failed to load history."));
   }, [user, API_BASE_URL]); // Include API_BASE_URL in the dependency array

@@ -17,7 +17,7 @@ def register_user():
     try:
         user = User(
             email=data['email'],
-            password=data['password'],  # In production, hash this!
+            password=data['password'],  # to b hashed!
             role=data.get('role', 'public')
         )
         db.session.add(user)
