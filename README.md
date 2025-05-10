@@ -64,4 +64,31 @@ To run WasteWatch locally, follow these steps:
 
     This will start the application in development mode. Open your browser and navigate to `http://localhost:3000` to view it.
 
+# ✅ Final Project Upgrade Checklist
+
+## 🔧 Backend Tasks
+- [ ] Refactor `app.py` to register Blueprints, enable CORS and JWT
+- [ ] Create `models/user.py` with User model (email, password_hash, role)
+- [ ] Rename collector model to company and add approval + `user_id`
+- [ ] Create many-to-many relationship between Company and Region
+- [ ] Create `models/region.py` and seed initial regions
+- [ ] Create `routes/auth_routes.py` with `/register`, `/login`, `/me`
+- [ ] Create `routes/company_routes.py` with CRUD + search functionality
+- [ ] Create `routes/admin_routes.py` to approve pending companies
+
+## ⚛️ Frontend Tasks
+- [ ] Create `AuthContext.js` for managing login state, roles, approval
+- [ ] Create `ProtectedRoute.js` to guard dashboard routes
+- [ ] Refactor `Register.js` into `RegisterCompany.js`
+- [ ] Update `Login.js` to store JWT and redirect by role
+- [ ] Replace `Verify.js` with company search by name or region
+- [ ] Create `CompanyDashboard.js` to edit profile and view regions
+- [ ] Create `AdminDashboard.js` to view and approve companies
+- [ ] Update `App.js` with all 6+ routes and wrap in `AuthProvider`
+
+## 📌 General Tasks
+- [ ] Seed DB with 2+ regions
+- [ ] Add form validations (required fields, valid emails)
+- [ ] Handle API errors (invalid login, unapproved access)
+- [ ] Update `README.md` with instructions, login info, screenshots
 ## Project Structure
