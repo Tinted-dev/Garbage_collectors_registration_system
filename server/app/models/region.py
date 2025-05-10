@@ -1,25 +1,18 @@
-from ..database import db
-
-collector_region = db.Table('collector_region',
-    db.Column('collector_id', db.Integer, db.ForeignKey('collectors.id')),
-    db.Column('region_id', db.Integer, db.ForeignKey('regions.id'))
-)
+from models import db
 
 class Region(db.Model):
-    __tablename__ = 'regions'
-
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    
+    # Optional: Add a description field for further information
+    description = db.Column(db.String(255))
+
+    def __repr__(self):
+        return f'<Region {self.name}>'
 
     def to_dict(self):
-        return {"id": self.id, "name": self.name}
-
-
-    collectors = db.relationship('GarbageCollector', secondary=collector_region, back_populates='regions')
-
-    def serialize(self):
         return {
-            "id": self.id,
-            "name": self.name
+            'id': self.id,
+            'name': self.name,
+            'description': self.description
         }
-
