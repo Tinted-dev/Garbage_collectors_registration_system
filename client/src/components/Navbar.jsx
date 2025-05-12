@@ -1,65 +1,53 @@
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 
-const Navbar = () => {
-  const { user, logout } = useAuth();
-  const [menuOpen, setMenuOpen] = useState(false);
+const NavigationBar = () => {
+  const navigate = useNavigate();
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  // You can enhance this with actual AuthContext for login state
+  const isAuthenticated = false;
+  const isAdmin = false;
+
+  const handleLogout = () => {
+    // Clear auth tokens, logout logic here
+    alert("Logged out!");
+    navigate('/');
+  };
 
   return (
-    <nav className="navbar navbar-expand-lg minimalist-navbar">
-      <div className="container-fluid">
-        <Link to="/" className="navbar-brand fw-bold text-white fs-4">
+    <Navbar bg="light" expand="lg" className="shadow-sm mb-3">
+      <Container>
+        <Navbar.Brand as={Link} to="/" className="fw-bold text-success">
           WasteWatch
-        </Link>
-        <button className="navbar-toggler border-0" type="button" onClick={toggleMenu} aria-label="Toggle navigation">
-          {menuOpen ? <X size={32} color="white" /> : <Menu size={24} color="white" />}
-        </button>
-
-        <div className={`collapse navbar-collapse ${menuOpen ? "show" : ""}`}>
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-3 gap-2">
-            <li className="nav-item">
-              <Link to="/" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/verify-collector" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Verify</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/register-collector" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Register</Link>
-            </li>
-
-            {user ? (
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="main-navbar" />
+        <Navbar.Collapse id="main-navbar">
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to="/">Home</Nav.Link>
+            <Nav.Link as={Link} to="/search-companies">Search Collectors</Nav.Link>
+            {!isAuthenticated && (
               <>
-                {user.role === "admin" && (
-                  <li className="nav-item">
-                    <Link to="/admin" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Admin</Link>
-                  </li>
-                )}
-                <li className="nav-item">
-                  <button
-                    className="btn minimalist-logout-button btn-sm ms-lg-2"
-                    onClick={() => {
-                      logout();
-                      setMenuOpen(false);
-                    }}
-                  >
-                    Logout
-                  </button>
-                </li>
+                <Nav.Link as={Link} to="/register">Register</Nav.Link>
+                <Nav.Link as={Link} to="/login">Login</Nav.Link>
               </>
-            ) : (
-              <li className="nav-item">
-                <Link to="/login" className="nav-link minimalist-nav-link" onClick={() => setMenuOpen(false)}>Login</Link>
-              </li>
             )}
-          </ul>
-        </div>
-      </div>
-    </nav>
+            {isAuthenticated && !isAdmin && (
+              <Nav.Link as={Link} to="/company-dashboard">Dashboard</Nav.Link>
+            )}
+            {isAuthenticated && isAdmin && (
+              <Nav.Link as={Link} to="/admin-dashboard">Admin Panel</Nav.Link>
+            )}
+          </Nav>
+          {isAuthenticated && (
+            <Button variant="outline-success" onClick={handleLogout} className="rounded-pill">
+              Logout
+            </Button>
+          )}
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default NavigationBar;

@@ -1,103 +1,99 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
 const AdminDashboard = () => {
-  const [pendingCollectors, setPendingCollectors] = useState([]);
-  const [regionStats, setRegionStats] = useState([]);
-  const [statusMessage, setStatusMessage] = useState("");
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const { auth } = useContext(AuthContext);
+  const [companies, setCompanies] = useState([]);
 
-  // Fetch data when component mounts
+  const token = auth?.token;
+
+  const fetchCompanies = async () => {
+    try {
+      const res = await axios.get('/companies', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCompanies(res.data);
+    } catch (err) {
+      console.error('Failed to fetch companies', err);
+    }
+  };
+
+  const handleApproval = async (id, approve) => {
+    try {
+      await axios.put(
+        `/companies/${id}/approve`,
+        { is_approved: approve },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchCompanies();
+    } catch (err) {
+      console.error('Failed to update approval', err);
+    }
+  };
+
   useEffect(() => {
-    fetchPendingCollectors();
-    fetchRegionStats();
+    fetchCompanies();
   }, []);
 
-  const fetchPendingCollectors = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/collectors/pending`);
-      setPendingCollectors(res.data);
-    } catch (error) {
-      setStatusMessage("Failed to load pending collectors.");
-    }
-  };
-
-  const fetchRegionStats = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/stats/regions`);
-      setRegionStats(res.data);
-    } catch (error) {
-      setStatusMessage("Failed to load region statistics.");
-    }
-  };
-
-  const handleStatusChange = async (collectorId, status) => {
-    try {
-      await axios.put(`${API_BASE_URL}/collectors/${collectorId}/status`, { status });
-      setStatusMessage(`Collector ${status} successfully.`);
-      fetchPendingCollectors();
-      fetchRegionStats();
-    } catch (error) {
-      setStatusMessage(`Failed to ${status} collector.`);
-    }
-  };
-
   return (
-    <div className="container mt-5">
-      <div className="card p-4 shadow border-primary border-2">
-        <h2 className="text-primary mb-4">Admin Dashboard</h2>
+    <div className="container mt-4">
+      <h2>Admin Dashboard</h2>
+      <p>Manage registered garbage collection companies.</p>
 
-        {statusMessage && <div className="alert alert-info">{statusMessage}</div>}
-
-        <section className="mb-5">
-          <h4 className="text-secondary">Pending Collector Registrations</h4>
-          {pendingCollectors.length > 0 ? (
-            <ul className="list-group mt-3">
-              {pendingCollectors.map((collector) => (
-                <li key={collector.id} className="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong>{collector.full_name}</strong><br />
-                    Phone: {collector.phone}
-                  </div>
-                  <div>
+      <div className="table-responsive">
+        <table className="table table-bordered mt-3">
+          <thead className="thead-light">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Description</th>
+              <th>Regions</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {companies.map((company) => (
+              <tr key={company.id}>
+                <td>{company.name}</td>
+                <td>{company.email}</td>
+                <td>{company.description}</td>
+                <td>
+                  <ul className="mb-0">
+                    {company.regions?.map((r) => (
+                      <li key={r.id}>{r.name}</li>
+                    ))}
+                  </ul>
+                </td>
+                <td>
+                  {company.is_approved ? (
+                    <span className="badge bg-success">Approved</span>
+                  ) : (
+                    <span className="badge bg-warning text-dark">Pending</span>
+                  )}
+                </td>
+                <td>
+                  {company.is_approved ? (
                     <button
-                      className="btn btn-success btn-sm me-2"
-                      onClick={() => handleStatusChange(collector.id, "approved")}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handleStatusChange(collector.id, "rejected")}
+                      className="btn btn-sm btn-danger"
+                      onClick={() => handleApproval(company.id, false)}
                     >
                       Reject
                     </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-muted mt-3">No pending collectors at the moment.</p>
-          )}
-        </section>
-
-        <hr />
-
-        <section>
-          <h4 className="text-secondary">Collectors by Region</h4>
-          {regionStats.length > 0 ? (
-            <ul className="list-group mt-3">
-              {regionStats.map((region, index) => (
-                <li key={index} className="list-group-item">
-                  {region.region}: <strong>{region.collector_count}</strong> approved collectors
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-muted mt-3">No statistics available.</p>
-          )}
-        </section>
+                  ) : (
+                    <button
+                      className="btn btn-sm btn-success"
+                      onClick={() => handleApproval(company.id, true)}
+                    >
+                      Approve
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

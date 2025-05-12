@@ -3,4 +3,4 @@ Flask-SQLAlchemy
 Flask-Migrate
 Flask-Cors
 gunicorn
-Flask-Mail
+Flask-MailFlask-Mail==0.10.0

@@ -8,5 +8,6 @@ from .company import Company
 from .region import Region
 from .service_request import ServiceRequest
 
+
 # Optional: if you define any association tables (e.g., company_region), import them too
-from .associations import company_region  # only if you've split it out into its own file
+# from .associations import company_region  # only if you've split it out into its own file

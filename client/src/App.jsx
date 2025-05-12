@@ -1,38 +1,53 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import RegisterCollector from "./pages/RegisterCollector";
-import VerifyCollector from "./pages/VerifyCollector";
-import AdminDashboard from "./pages/AdminDashboard";
-import UserDashboard from "./pages/UserDashboard";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import NavigationBar from './components/Navbar';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import RegisterCompany from './pages/RegisterCompany';
+import CompanyDashboard from './pages/CompanyDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import SearchCompanies from './pages/SearchCompanies';
+import ProtectedRoute from './components/ProtectedRoute';
+import { useContext } from 'react';
+import { AuthContext } from './context/AuthContext';
 
+const App = () => {
+  const { user, isAuthenticated } = useContext(AuthContext);
 
-function App() {
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-green-500 text-white text-center text-4xl p-10">
-        <Router>
-          <Navbar />
-          <main className="max-w-6xl mx-auto px-4 py-8">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register-collector" element={<RegisterCollector />} />
-              <Route path="/verify-collector" element={<VerifyCollector />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/user-dashboard" element={<UserDashboard />} />
-            </Routes>
-          </main>
-          <footer className="text-center py-6 text-sm text-green-700 opacity-70">
-            &copy; {new Date().getFullYear()} WasteWatch | All rights reserved
-          </footer>
-        </Router>
-      </div>
-    </AuthProvider>
+    <>
+      <NavigationBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/search-companies" element={<SearchCompanies />} />
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
+        <Route path="/register" element={!isAuthenticated ? <RegisterCompany /> : <Navigate to="/" />} />
+
+        {/* Company Dashboard Route */}
+        <Route
+          path="/company-dashboard"
+          element={
+            <ProtectedRoute isAllowed={isAuthenticated && user?.role === 'company'}>
+              <CompanyDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Dashboard Route */}
+        <Route
+          path="/admin-dashboard"
+          element={
+            <ProtectedRoute isAllowed={isAuthenticated && user?.role === 'admin'}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Fallback for undefined routes */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </>
   );
-}
+};
 
 export default App;

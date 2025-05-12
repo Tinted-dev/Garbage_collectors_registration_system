@@ -1,93 +1,56 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useAuth } from "../context/AuthContext";
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Get the backend URL
+  const { setAuth } = useContext(AuthContext);
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleChange = e => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    setLoading(true);
-    axios.post(`${API_BASE_URL}/users/login`, formData) // Use the environment variable
-      .then(res => {
-        login(res.data);
-        const role = res.data.role;
-        if (role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/user-dashboard");
-        }
-      })
-      .catch(() => {
-        setError("Invalid credentials");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+    try {
+      const res = await axios.post('/auth/login', credentials);
+      const token = res.data.access_token;
+      const decoded = jwt_decode(token);
 
+      const authData = {
+        token,
+        role: decoded.role,
+        isApproved: decoded.is_approved,
+        userId: decoded.sub,
+      };
+
+      localStorage.setItem('token', token);
+      setAuth(authData);
+
+      if (authData.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else if (authData.role === 'collector' && authData.isApproved) {
+        navigate('/company-dashboard');
+      } else {
+        alert('Awaiting admin approval.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Login failed. Check credentials.');
+    }
+  };
 
   return (
-    <div className="container mt-5">
-      <div className="card shadow p-4" style={{ backgroundColor: "#ffffff", color: "#212529" }}>
-        <h2 className="text-center text-success fw-bold mb-4">Login</h2>
-
-        {error && (
-          <div className="alert alert-danger text-center" role="alert">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label fw-semibold">Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              placeholder="Enter your email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label fw-semibold">Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              placeholder="Enter your password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-            />
-          </div>
-
-          <button type="submit" className="btn btn-success w-100" disabled={loading}>
-            {loading ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Logging in...
-              </>
-            ) : (
-              "Login"
-            )}
-          </button>
-        </form>
-      </div>
+    <div className="container mt-4">
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <input name="email" placeholder="Email" onChange={handleChange} className="form-control mb-2" required />
+        <input name="password" type="password" placeholder="Password" onChange={handleChange} className="form-control mb-2" required />
+        <button type="submit" className="btn btn-primary">Login</button>
+      </form>
     </div>
   );
 };

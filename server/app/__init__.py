@@ -1,34 +1,31 @@
 from flask import Flask
-from flask_migrate import Migrate
 from flask_cors import CORS
-from flask_mail import Mail
-
-from app.database import db  # Local database.py
-from app.routes import auth_routes, company_routes, admin_routes  # Local routes
-
-mail = Mail()  # Define globally so it can be imported elsewhere if needed
+from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
+from app.database import db
+from app.routes import auth_bp, company_bp, admin_bp
+import os
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('app.config.Config')
+
+    # Configurations
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///your_database.db')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your_secret_key')  # Preferably from .env
+    app.config['JWT_TOKEN_LOCATION'] = ['headers']
+    app.config['JWT_HEADER_NAME'] = 'Authorization'
+    app.config['JWT_HEADER_TYPE'] = 'Bearer'
 
     # Initialize extensions
-    CORS(app)
     db.init_app(app)
-    mail.init_app(app)
-    app.mail = mail  # Attach mail instance to app
-
-    # Register models inside app context
-    with app.app_context():
-        from app.models.company import Company
-        from app.models.region import Region
-        from app.models.user import User
-
-        Migrate(app, db)
+    jwt = JWTManager(app)  # Moved inside create_app to be initialized with the app instance
+    CORS(app)
+    migrate = Migrate(app, db)
 
     # Register Blueprints
-    app.register_blueprint(auth_routes.auth_bp, url_prefix='/auth')
-    app.register_blueprint(company_routes.company_bp, url_prefix='/companies')
-    app.register_blueprint(admin_routes.admin_bp, url_prefix='/admin')
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(company_bp, url_prefix='/companies')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
 
     return app
