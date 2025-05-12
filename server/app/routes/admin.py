@@ -9,7 +9,7 @@ admin_bp = Blueprint('admin_bp', __name__)
 
 # Approve a company (only accessible by admins)
 @admin_bp.route('/approve_company/<int:company_id>', methods=['PUT'])
-@jwt_required()
+# @jwt_required()
 def approve_company(company_id):
     user_id = get_jwt_identity()
     # Check if the user is an admin
@@ -29,7 +29,7 @@ def approve_company(company_id):
 
 # Get all unapproved companies (only accessible by admins)
 @admin_bp.route('/unapproved_companies', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 def get_unapproved_companies():
     user_id = get_jwt_identity()
     # Check if the user is an admin
@@ -40,10 +40,23 @@ def get_unapproved_companies():
     companies = Company.query.filter_by(is_approved=False).all()
     return jsonify([company.to_dict() for company in companies])
 
+# Get all regions (only accessible by admins)
+@admin_bp.route('/regions', methods=['GET'])
+# @jwt_required()
+def get_regions():
+    user_id = get_jwt_identity()
+    # Check if the user is an admin
+    user = User.query.get(user_id)
+    if user.role != 'admin':
+        return jsonify({"msg": "You do not have permission to view regions"}), 403
 
+    regions = Region.query.all()
+    return jsonify([region.to_dict() for region in regions])
+
+# ... (other admin routes) ...
 # Get all users (only accessible by admins)
 @admin_bp.route('/users', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 def get_users():
     user_id = get_jwt_identity()
     # Check if the user is an admin
@@ -62,7 +75,7 @@ def get_users():
 
 # Admin-only route to add a new region
 @admin_bp.route('/add_region', methods=['POST'])
-@jwt_required()
+# @jwt_required()
 def add_region():
     # Ensure the user is an admin
     user_id = get_jwt_identity()

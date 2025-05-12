@@ -15,27 +15,29 @@ const SearchCompanies = () => {
 
   const fetchCompanies = async () => {
     try {
-      const res = await axios.get('/companies');
-      console.log('Response from /companies:', res.data); // Log the data
+      const res = await axios.get('/companies/');  // Add trailing slash
       if (Array.isArray(res.data)) {
-        const approvedCompanies = res.data.filter((c) => c.is_approved);
-        setCompanies(approvedCompanies);
-        setFiltered(approvedCompanies);
-      } else {
-        console.error("Expected an array, but got:", res.data);
+        setCompanies(res.data);  // No need to filter, Flask already did
+        setFiltered(res.data);
       }
     } catch (err) {
       console.error('Error fetching companies', err);
     }
   };
-  
+
 
   const fetchRegions = async () => {
     try {
       const res = await axios.get('/admin/regions'); // or `/regions` if you expose it generally
-      setRegions(res.data);
+      if (Array.isArray(res.data)) {
+        setRegions(res.data);
+      } else {
+        console.error('Error fetching regions: Data is not an array', res.data);
+        setRegions([]); // Initialize as an empty array to prevent errors
+      }
     } catch (err) {
       console.error('Error fetching regions', err);
+      setRegions([]); // Initialize as an empty array in case of an error
     }
   };
 

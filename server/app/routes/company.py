@@ -7,7 +7,8 @@ from app.models.region import Region
 company_bp = Blueprint('company_bp', __name__)
 
 # Create a new company (only accessible by company owners)
-@company_bp.route('/', methods=['POST'])
+@company_bp.route('', methods=['POST'])
+@company_bp.route('/', methods=['GET']) 
 @jwt_required()
 def create_company():
     user_id = get_jwt_identity()

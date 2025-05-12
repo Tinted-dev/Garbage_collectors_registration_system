@@ -4,52 +4,99 @@ import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
+// Set base URL for all axios requests
+axios.defaults.baseURL = 'http://localhost:5000';
+
 const Login = () => {
   const navigate = useNavigate();
   const { setAuth } = useContext(AuthContext);
-  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [credentials, setCredentials] = useState({ 
+    email: '', 
+    password: '' 
+  });
+  const [error, setError] = useState('');
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    
     try {
-      const res = await axios.post('/auth/login', credentials);
+      const res = await axios.post('/auth/login', credentials, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!res.data.access_token) {
+        throw new Error('No access token received');
+      }
+
       const token = res.data.access_token;
-      const decoded = jwt_decode(token);
+      const decoded = jwtDecode(token);
+
+      // Validate required fields
+      if (!decoded.sub || !decoded.role) {
+        throw new Error('Invalid token structure');
+      }
 
       const authData = {
         token,
         role: decoded.role,
-        isApproved: decoded.is_approved,
+        isApproved: decoded.is_approved || false,
         userId: decoded.sub,
       };
 
       localStorage.setItem('token', token);
       setAuth(authData);
 
-      if (authData.role === 'admin') {
-        navigate('/admin-dashboard');
-      } else if (authData.role === 'collector' && authData.isApproved) {
-        navigate('/company-dashboard');
-      } else {
-        alert('Awaiting admin approval.');
+      // Handle navigation
+      switch(authData.role) {
+        case 'admin':
+          navigate('/admin-dashboard');
+          break;
+        case 'collector':
+          navigate(authData.isApproved ? '/company-dashboard' : '/pending-approval');
+          break;
+        default:
+          navigate('/');
       }
     } catch (err) {
-      console.error(err);
-      alert('Login failed. Check credentials.');
+      console.error('Login error:', err);
+      setError(err.response?.data?.error || err.message || 'Login failed');
     }
   };
 
   return (
     <div className="container mt-4">
       <h2>Login</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <input name="email" placeholder="Email" onChange={handleChange} className="form-control mb-2" required />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} className="form-control mb-2" required />
-        <button type="submit" className="btn btn-primary">Login</button>
+        <input 
+          name="email" 
+          type="email"
+          placeholder="Email" 
+          value={credentials.email}
+          onChange={handleChange} 
+          className="form-control mb-2" 
+          required 
+        />
+        <input 
+          name="password" 
+          type="password" 
+          placeholder="Password" 
+          value={credentials.password}
+          onChange={handleChange} 
+          className="form-control mb-2" 
+          required 
+          minLength="6"
+        />
+        <button type="submit" className="btn btn-primary w-100">
+          Login
+        </button>
       </form>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,10 +15,20 @@ const RegisterCompany = () => {
   const [regions, setRegions] = useState([]);
 
   // Fetch regions on mount
-  React.useEffect(() => {
+  useEffect(() => {
     axios.get('/admin/regions')
-      .then(res => setRegions(res.data))
-      .catch(err => console.error('Error fetching regions:', err));
+      .then(res => {
+        if (Array.isArray(res.data)) {
+          setRegions(res.data);
+        } else {
+          console.error('Error fetching regions: Data is not an array', res.data);
+          setRegions([]); // Set to empty array on error
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching regions:', err);
+        setRegions([]); // Set to empty array on error
+      });
   }, []);
 
   const handleChange = e => {
@@ -47,7 +57,7 @@ const RegisterCompany = () => {
         <textarea name="description" placeholder="Description" onChange={handleChange} className="form-control mb-2" required />
         <select name="region" onChange={handleChange} className="form-control mb-2" required>
           <option value="">Select Region</option>
-          {regions.map(region => (
+          {Array.isArray(regions) && regions.map(region => (
             <option key={region.id} value={region.name}>{region.name}</option>
           ))}
         </select>
