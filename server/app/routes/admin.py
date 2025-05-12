@@ -26,6 +26,12 @@ def approve_company(company_id):
 
     return jsonify({"msg": "Company approved successfully", "company": company.to_dict()})
 
+@admin_bp.route('/companies', methods=['GET'])
+# @admin_required  # optional, remove if you want public access
+def get_approved_companies():
+    approved_companies = Company.query.filter_by(is_approved=True).all()
+    return jsonify([company.to_dict() for company in approved_companies]), 200
+
 
 # Get all unapproved companies (only accessible by admins)
 @admin_bp.route('/unapproved_companies', methods=['GET'])
@@ -43,15 +49,16 @@ def get_unapproved_companies():
 # Get all regions (only accessible by admins)
 @admin_bp.route('/regions', methods=['GET'])
 # @jwt_required()
-def get_regions():
-    user_id = get_jwt_identity()
-    # Check if the user is an admin
-    user = User.query.get(user_id)
-    if user.role != 'admin':
-        return jsonify({"msg": "You do not have permission to view regions"}), 403
 
-    regions = Region.query.all()
-    return jsonify([region.to_dict() for region in regions])
+@admin_bp.route('/regions', methods=['GET'])
+def get_regions():
+    try:
+        regions = Region.query.all()
+        return jsonify([region.to_dict() for region in regions]), 200
+    except Exception as e:
+        print(f"Error fetching regions: {e}")
+        return jsonify({"message": "Internal server error"}), 500
+
 
 # ... (other admin routes) ...
 # Get all users (only accessible by admins)

@@ -18,6 +18,16 @@ app.config['JWT_HEADER_TYPE'] = 'Bearer'
 
 # Initialize extensions
 db.init_app(app)
+
+# After `app = Flask(__name__)`
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
+
+
+# Allow all routes and methods for localhost development
+CORS(app, origins="*", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], allow_headers="*")
+
+
 CORS(app, resources={
     r"/auth/*": {"origins": "http://localhost:5173"},
     r"/companies/*": {"origins": "http://localhost:5173"},
