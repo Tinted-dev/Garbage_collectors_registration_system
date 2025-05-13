@@ -9,28 +9,31 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
+    const validateToken = () => {
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          console.log("Decoded token:", decoded);
 
-        // Check if token is expired
-        const isExpired = decoded.exp * 1000 < Date.now();
-        if (isExpired) {
-          console.warn('Token has expired');
+          const currentTime = Date.now() / 1000;
+          if (decoded.exp < currentTime) {
+            logout();
+          } else {
+            setUser({
+              id: decoded.sub,              // Flask: identity=user.id
+              role: decoded.role,           // Flask: additional_claims
+              isApproved: decoded.is_approved,
+            });
+          }
+        } catch (error) {
+          console.error("Invalid token:", error);
           logout();
-        } else {
-          setUser({
-            email: decoded.sub, // or decoded.email if available
-            role: decoded.role,
-            isApproved: decoded.is_approved,
-          });
         }
-      } catch (error) {
-        console.error('Invalid token:', error);
-        logout();
       }
-    }
-    setLoading(false); // Finish auth check
+      setLoading(false);
+    };
+
+    validateToken();
   }, [token]);
 
   const login = (jwt) => {
@@ -44,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const isAuthenticated = !!token && !!user;
+  const isAuthenticated = !!user;
 
   return (
     <AuthContext.Provider value={{ token, user, login, logout, isAuthenticated, loading }}>

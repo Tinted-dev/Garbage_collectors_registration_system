@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import NavigationBar from './components/Navbar';
 import Home from './pages/Home';
@@ -8,52 +8,49 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import SearchCompanies from './pages/SearchCompanies';
 import ProtectedRoute from './components/ProtectedRoute';
-import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 
 const App = () => {
   const { user, isAuthenticated, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <div className="text-center mt-5">Loading...</div>; // or a spinner
+    return <div className="text-center mt-5">Loading...</div>;
   }
 
   return (
     <>
       <NavigationBar />
+
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/search-companies" element={<SearchCompanies />} />
+
+        {/* Auth Routes */}
         <Route
           path="/login"
-          element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
+          element={
+            !isAuthenticated ? (
+              <Login />
+            ) : (
+              <Navigate to={user?.role === 'admin' ? '/admin-dashboard' : '/company-dashboard'} />
+            )
+          }
         />
         <Route
           path="/register"
           element={!isAuthenticated ? <RegisterCompany /> : <Navigate to="/" />}
         />
 
-        {/* Company Dashboard Route */}
-        <Route
-          path="/company-dashboard"
-          element={
-            <ProtectedRoute isAllowed={isAuthenticated && user?.role === 'company'}>
-              <CompanyDashboard />
-            </ProtectedRoute>
-          }
-        />
+        {/* Protected Routes using nested layout */}
+        <Route element={<ProtectedRoute requiredRole="company" />}>
+          <Route path="/company-dashboard" element={<CompanyDashboard />} />
+        </Route>
+        <Route element={<ProtectedRoute requiredRole="admin" />}>
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        </Route>
 
-        {/* Admin Dashboard Route */}
-        <Route
-          path="/admin-dashboard"
-          element={
-            <ProtectedRoute isAllowed={isAuthenticated && user?.role === 'admin'}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Fallback for undefined routes */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
