@@ -13,17 +13,24 @@ const SearchCompanies = () => {
     fetchRegions();
   }, []);
 
+  const token = localStorage.getItem("access_token"); // Ensure it's set after login
+
   const fetchCompanies = async () => {
     try {
-      const res = await axios.get('/companies/');  // Add trailing slash
-      if (Array.isArray(res.data)) {
-        setCompanies(res.data);  // No need to filter, Flask already did
-        setFiltered(res.data);
-      }
-    } catch (err) {
-      console.error('Error fetching companies', err);
+      const response = await axios.get("/admin/companies", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data);
+      setCompanies(response.data); // ✅ This is what was missing
+      setFiltered(response.data); // Optional: show all on first load
+    } catch (error) {
+      console.error("Error fetching companies", error.response || error);
     }
   };
+  
+  
 
 
   const fetchRegions = async () => {

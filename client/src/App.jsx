@@ -12,7 +12,11 @@ import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 
 const App = () => {
-  const { user, isAuthenticated } = useContext(AuthContext);
+  const { user, isAuthenticated, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return <div className="text-center mt-5">Loading...</div>; // or a spinner
+  }
 
   return (
     <>
@@ -20,8 +24,14 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/search-companies" element={<SearchCompanies />} />
-        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
-        <Route path="/register" element={!isAuthenticated ? <RegisterCompany /> : <Navigate to="/" />} />
+        <Route
+          path="/login"
+          element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/register"
+          element={!isAuthenticated ? <RegisterCompany /> : <Navigate to="/" />}
+        />
 
         {/* Company Dashboard Route */}
         <Route

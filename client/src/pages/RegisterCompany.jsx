@@ -7,27 +7,20 @@ const RegisterCompany = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     password: '',
     description: '',
-    region: '',
+    region_id: '',
   });
 
   const [regions, setRegions] = useState([]);
 
-  // Fetch regions on mount
   useEffect(() => {
-    axios.get('/admin/regions')
-      .then(res => {
-        if (Array.isArray(res.data)) {
-          setRegions(res.data);
-        } else {
-          console.error('Error fetching regions: Data is not an array', res.data);
-          setRegions([]); // Set to empty array on error
-        }
-      })
+    axios.get('http://localhost:5000/admin/regions')
+      .then(res => setRegions(res.data))
       .catch(err => {
         console.error('Error fetching regions:', err);
-        setRegions([]); // Set to empty array on error
+        setRegions([]);
       });
   }, []);
 
@@ -37,9 +30,24 @@ const RegisterCompany = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
     try {
-      await axios.post('/companies/register', formData);
-      alert('Company registered. Awaiting approval.');
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        description: formData.description,
+        region: regions.find(r => r.id === parseInt(formData.region_id))?.name || '',
+      };
+
+      await axios.post('http://localhost:5000/companies/register', payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      alert('Company registered successfully. Please log in.');
       navigate('/login');
     } catch (err) {
       console.error(err);
@@ -53,12 +61,13 @@ const RegisterCompany = () => {
       <form onSubmit={handleSubmit}>
         <input name="name" placeholder="Company Name" onChange={handleChange} className="form-control mb-2" required />
         <input name="email" placeholder="Email" onChange={handleChange} className="form-control mb-2" required />
+        <input name="phone" placeholder="Phone Number" onChange={handleChange} className="form-control mb-2" required />
         <input name="password" type="password" placeholder="Password" onChange={handleChange} className="form-control mb-2" required />
         <textarea name="description" placeholder="Description" onChange={handleChange} className="form-control mb-2" required />
-        <select name="region" onChange={handleChange} className="form-control mb-2" required>
+        <select name="region_id" onChange={handleChange} className="form-control mb-2" required>
           <option value="">Select Region</option>
-          {Array.isArray(regions) && regions.map(region => (
-            <option key={region.id} value={region.name}>{region.name}</option>
+          {regions.map(region => (
+            <option key={region.id} value={region.id}>{region.name}</option>
           ))}
         </select>
         <button type="submit" className="btn btn-success">Register</button>

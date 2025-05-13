@@ -35,18 +35,29 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
-    if not email or not password:
-        return jsonify({"msg": "Email and password are required"}), 400
-
     user = User.query.filter_by(email=email).first()
-    if not user or not user.check_password(password):
-        return jsonify({"msg": "Invalid credentials"}), 401
 
-    access_token = create_access_token(identity=user.id)
-    return jsonify(access_token=access_token), 200
+    if user and user.check_password(password):
+        # If the user is a collector, check approval from their associated company
+        is_approved = False
+        if user.role == 'collector' and user.companies:
+            is_approved = user.companies[0].is_approved  # assuming one company per collector
+
+        # Use primitive type for identity and additional_claims for custom fields
+        token = create_access_token(
+            identity=user.id,
+            additional_claims={
+                "role": user.role,
+                "is_approved": is_approved
+            }
+        )
+
+        return jsonify(access_token=token), 200
+    else:
+        return jsonify({"error": "Invalid email or password"}), 401
 
 @auth_bp.route('/me', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_me():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)

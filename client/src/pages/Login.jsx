@@ -9,7 +9,7 @@ axios.defaults.baseURL = 'http://localhost:5000';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setAuth } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const [credentials, setCredentials] = useState({ 
     email: '', 
     password: '' 
@@ -28,20 +28,24 @@ const Login = () => {
       const res = await axios.post('/auth/login', credentials, {
         headers: {
           'Content-Type': 'application/json'
+          
         }
       });
 
       if (!res.data.access_token) {
         throw new Error('No access token received');
       }
+      
+      localStorage.setItem("access_token", res.data.access_token);
 
       const token = res.data.access_token;
       const decoded = jwtDecode(token);
-
+    
       // Validate required fields
-      if (!decoded.sub || !decoded.role) {
+      if (typeof decoded.sub === 'undefined' || typeof decoded.role === 'undefined') {
         throw new Error('Invalid token structure');
       }
+      console.log("Decoded token:", decoded);
 
       const authData = {
         token,
@@ -51,7 +55,8 @@ const Login = () => {
       };
 
       localStorage.setItem('token', token);
-      setAuth(authData);
+      login(token); // This will update context and localStorage
+
 
       // Handle navigation
       switch(authData.role) {

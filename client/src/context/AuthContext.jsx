@@ -6,21 +6,31 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        setUser({
-          email: decoded.sub,         // adjust depending on your token structure
-          role: decoded.role,
-          isApproved: decoded.is_approved,
-        });
+
+        // Check if token is expired
+        const isExpired = decoded.exp * 1000 < Date.now();
+        if (isExpired) {
+          console.warn('Token has expired');
+          logout();
+        } else {
+          setUser({
+            email: decoded.sub, // or decoded.email if available
+            role: decoded.role,
+            isApproved: decoded.is_approved,
+          });
+        }
       } catch (error) {
-        console.error("Invalid token:", error);
+        console.error('Invalid token:', error);
         logout();
       }
     }
+    setLoading(false); // Finish auth check
   }, [token]);
 
   const login = (jwt) => {
@@ -34,10 +44,10 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const isAuthenticated = !!token;
+  const isAuthenticated = !!token && !!user;
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ token, user, login, logout, isAuthenticated, loading }}>
       {children}
     </AuthContext.Provider>
   );
